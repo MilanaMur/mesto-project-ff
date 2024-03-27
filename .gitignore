@@ -1,3 +1,5 @@
 .prettierrc
 .prettierignore
 .editorconfig
+node_modules
+dist
