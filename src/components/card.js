@@ -2,20 +2,25 @@
 const cardTemplate = document.querySelector('#card-template').content;
 
 // Функция создания карточки
-function createCard(cardData, deleteCard, handleLikeBtn, handleImageShow) {
+function createCard(
+  { name: cardName, link: cardLink },
+  deleteCard,
+  handleLikeBtn,
+  handleImageShow
+) {
   const card = cardTemplate.querySelector('.card').cloneNode(true);
   const cardTitle = card.querySelector('.card__title');
   const cardImage = card.querySelector('.card__image');
   const cardDeleteBtn = card.querySelector('.card__delete-button');
 
-  cardImage.src = cardData.link;
-  cardImage.alt = cardData.name;
-  cardTitle.textContent = cardData.name;
+  cardImage.src = cardLink;
+  cardImage.alt = cardName;
+  cardTitle.textContent = cardName;
 
   cardDeleteBtn.addEventListener('click', () => deleteCard(card));
   card.addEventListener('click', evt => handleLikeBtn(evt));
   cardImage.addEventListener('click', () =>
-    handleImageShow(cardData.link, cardData.name)
+    handleImageShow(cardLink, cardName)
   );
 
   return card;

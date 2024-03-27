@@ -1,9 +1,12 @@
-import '../pages/index.css';
+import '../index.css';
+
 import { initialCards } from './cards.js';
-import { createCard, deleteCard, handleLikeBtn } from './components/card.js';
-import { openPopup, closePopup } from './components/modal.js';
+import { createCard, deleteCard, handleLikeBtn } from '../components/card.js';
+import { openPopup, closePopup } from '../components/modal.js';
 
 const cardsContainer = document.querySelector('.places__list');
+
+const popups = document.querySelectorAll('.popup');
 
 const addCardBtn = document.querySelector('.profile__add-button');
 
@@ -12,12 +15,16 @@ const popupEditType = document.querySelector('.popup_type_edit');
 
 const formNewCard = document.forms['new-place'];
 const popupNewCard = document.querySelector('.popup_type_new-card');
+const inputNameFormCard = popupNewCard.querySelector(
+  '.popup__input_type_card-name'
+);
+const inputLinkFormCard = popupNewCard.querySelector('.popup__input_type_url');
 
 const editProfileBtn = document.querySelector('.profile__edit-button');
 const profileName = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
-const displayedName = document.querySelector('.popup__input_type_name');
-const displayedDescription = document.querySelector(
+const inputNameFormProfile = document.querySelector('.popup__input_type_name');
+const inputDescriptionFormProfile = document.querySelector(
   '.popup__input_type_description'
 );
 
@@ -34,23 +41,17 @@ function handleImageShow(cardImage, cardTitle) {
   openPopup(popupImageType);
 }
 
-// Функция закрытия попапа с формой после сабмита
-function closePopupAfterSubmit(popup) {
-  const saveBtn = popup.querySelector('.popup__button');
-  saveBtn.addEventListener('submit', closePopup(popup));
-}
-
 // Функция для редактирования профиля
 function handleFormEditProfileSubmit(evt) {
   evt.preventDefault();
 
-  const displayedNameValue = displayedName.value;
-  const displayedDescriptionValue = displayedDescription.value;
+  const inputNameFormProfileValue = inputNameFormProfile.value;
+  const inputDescriptionFormProfileValue = inputDescriptionFormProfile.value;
 
-  profileName.textContent = displayedNameValue;
-  profileDescription.textContent = displayedDescriptionValue;
+  profileName.textContent = inputNameFormProfileValue;
+  profileDescription.textContent = inputDescriptionFormProfileValue;
 
-  closePopupAfterSubmit(popupEditType);
+  closePopup(popupEditType);
 }
 formEditProfile.addEventListener('submit', handleFormEditProfileSubmit);
 
@@ -58,13 +59,11 @@ formEditProfile.addEventListener('submit', handleFormEditProfileSubmit);
 function handleFormNewCardSubmit(evt) {
   evt.preventDefault();
 
-  const cardName = popupNewCard.querySelector('.popup__input_type_card-name');
-  const cardLink = popupNewCard.querySelector('.popup__input_type_url');
-  const cardNameValue = cardName.value;
-  const cardLinkValue = cardLink.value;
+  const inputNameFormCardValue = inputNameFormCard.value;
+  const inputLinkFormCardValue = inputLinkFormCard.value;
 
   const newCard = createCard(
-    { name: cardNameValue, link: cardLinkValue },
+    { name: inputNameFormCardValue, link: inputLinkFormCardValue },
     deleteCard,
     handleLikeBtn,
     handleImageShow
@@ -72,7 +71,7 @@ function handleFormNewCardSubmit(evt) {
 
   cardsContainer.prepend(newCard);
 
-  closePopupAfterSubmit(popupNewCard);
+  closePopup(popupNewCard);
 
   formNewCard.reset();
 }
@@ -84,8 +83,8 @@ addCardBtn.addEventListener('click', function () {
 });
 
 editProfileBtn.addEventListener('click', function () {
-  displayedName.value = profileName.textContent;
-  displayedDescription.value = profileDescription.textContent;
+  inputNameFormProfile.value = profileName.textContent;
+  inputDescriptionFormProfile.value = profileDescription.textContent;
 
   openPopup(popupEditType);
 });
@@ -99,4 +98,16 @@ initialCards.forEach(function (card) {
     handleImageShow
   );
   cardsContainer.append(initialCard);
+});
+
+// Закрытие попапов по оверлею/кнопке
+popups.forEach(popup => {
+  popup.addEventListener('click', evt => {
+    if (
+      evt.target.classList.contains('popup_is-opened') ||
+      evt.target.classList.contains('popup__close')
+    ) {
+      closePopup(popup);
+    }
+  });
 });
